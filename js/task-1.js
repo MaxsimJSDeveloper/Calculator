@@ -6,12 +6,12 @@ const secondNumber = parseFloat(prompt('Input second number:'));
 
 function calc(a, b, callback) {
   if (isNaN(Number(a)) || isNaN(Number(b))) {
-    if (action.length > 1) {
+    if (action.trim().length > 1) {
       return alert(`Input correct number and action`);
     }
     return alert(`Input correct number!`);
   }
-  switch (action) {
+  switch (action.trim()) {
     case '+':
       return (callback = sum(a, b));
     case '-':
