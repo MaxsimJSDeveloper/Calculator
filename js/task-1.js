@@ -77,7 +77,7 @@ function calculateResult() {
   } else if (sign === 'x') {
     resultValue = parseFloat(firstValue) * parseFloat(secondValue);
   } else if (sign === '/') {
-    if (parseFloat(secondValue) === 0) {
+    if (parseFloat(secondValue) === 0 || parseFloat(firstValue) === 0) {
       result.innerHTML = `<p class="massage">На 0 ділити не можна!</p>`;
       return;
     }
@@ -133,6 +133,7 @@ function cleaner() {
   isSecondValue = false;
   sign = '';
   resultValue = 0;
+  result.style.fontSize = '4em';
 }
 
 dots.addEventListener('click', e => {
