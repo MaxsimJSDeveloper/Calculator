@@ -60,7 +60,6 @@ getSign();
 
 equals.addEventListener('click', calculateResult);
 
-// Підрахунок
 function calculateResult() {
   result.innerHTML = '';
   if (sign === '+') {
