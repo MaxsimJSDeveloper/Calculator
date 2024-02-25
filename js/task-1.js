@@ -38,6 +38,7 @@ function getFirstValue(el) {
     firstValue += el;
   }
   result.innerHTML = firstValue;
+  checkFontSize();
 }
 
 function getSecondValue(el) {
@@ -47,6 +48,7 @@ function getSecondValue(el) {
     if (el === '.' && secondValue.includes('.')) return;
     secondValue += el;
     result.innerHTML = secondValue;
+    checkFontSize();
   }
 }
 
@@ -85,6 +87,7 @@ function calculateResult() {
   firstValue = resultValue.toString();
   secondValue = '';
   checkResultLength();
+  checkFontSize();
 }
 
 function checkResultLength() {
@@ -149,3 +152,17 @@ dots.addEventListener('click', e => {
     }
   }
 });
+
+function checkFontSize() {
+  if (result.innerHTML.length > 30) {
+    result.innerHTML = `<p class="massage lol">---- ⊙_⊙ ----</p>`;
+  } else if (result.innerHTML.length > 14) {
+    result.style.fontSize = '1em';
+  } else if (result.innerHTML.length > 11) {
+    result.style.fontSize = '2em';
+  } else if (result.innerHTML.length > 8) {
+    result.style.fontSize = '3em';
+  } else {
+    result.style.fontSize = '4em';
+  }
+}
