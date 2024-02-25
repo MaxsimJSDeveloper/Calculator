@@ -7,7 +7,7 @@ const equals = document.querySelector('.equal');
 const clear = document.querySelector('.ac');
 const negative = document.querySelector('.plus-minus');
 const percent = document.querySelector('.percent');
-const dots = document.querySelectorAll('.dot');
+const dots = document.querySelector('.dot');
 
 let firstValue = '';
 let isFirstValue = false;
@@ -30,12 +30,18 @@ for (let i = 0; i < numbers.length; i++) {
 
 function getFirstValue(el) {
   result.innerHTML = '';
+  if (el === '0' && firstValue === '0') return;
   if (el === '.' && firstValue.includes('.')) return;
-  firstValue += el;
+  if (firstValue === '0' && el !== '.') {
+    firstValue = el;
+  } else {
+    firstValue += el;
+  }
   result.innerHTML = firstValue;
 }
 
 function getSecondValue(el) {
+  if (el === '0' && secondValue === '0') return;
   if (firstValue != '' && sign != '') {
     result.innerHTML = '';
     if (el === '.' && secondValue.includes('.')) return;
@@ -126,23 +132,20 @@ function cleaner() {
   resultValue = 0;
 }
 
-for (let i = 0; i < dots.length; i++) {
-  dots[i].addEventListener('click', e => {
-    let dotValue = e.target.getAttribute('value');
-    if (!isFirstValue) {
-      if (!firstValue) {
-        firstValue += '0';
-      }
-      if (!firstValue.includes('.')) {
-        firstValue += dotValue;
-        result.innerHTML = firstValue;
-      }
+dots.addEventListener('click', e => {
+  let dotValue = e.target.getAttribute('value');
+  if (!isFirstValue) {
+    firstValue += firstValue === '' ? '0' : '';
+    if (!firstValue.includes('.')) {
+      firstValue += dotValue;
+      result.innerHTML = firstValue;
     }
-    if (isFirstValue && !isSecondValue) {
-      if (!secondValue.includes('.')) {
-        secondValue += dotValue;
-        result.innerHTML = secondValue;
-      }
+  }
+  if (isFirstValue && !isSecondValue) {
+    secondValue += secondValue === '' ? '0' : '';
+    if (!secondValue.includes('.')) {
+      secondValue += dotValue;
+      result.innerHTML = secondValue;
     }
-  });
-}
+  }
+});
