@@ -1,34 +1,149 @@
 'use strict';
+// Змінні для роботи
+const numbers = document.querySelectorAll('.number');
+const result = document.querySelector('.result p');
+const signs = document.querySelectorAll('.sign');
+const equals = document.querySelector('.equal');
+const clear = document.querySelector('.ac');
+const negative = document.querySelector('.plus-minus');
+const percent = document.querySelector('.percent');
+const dots = document.querySelectorAll('.dot');
 
-const firstNumber = parseFloat(prompt('Input first number:'));
-const action = prompt('Input action (+, -, *, /):');
-const secondNumber = parseFloat(prompt('Input second number:'));
+let firstValue = '';
+let isFirstValue = false;
+let secondValue = '';
+let isSecondValue = false;
+let sign = '';
+let resultValue = 0;
 
-function calc(a, b, callback) {
-  if (isNaN(Number(a)) || isNaN(Number(b))) {
-    if (action.trim().length > 1) {
-      return alert(`Input correct number and action`);
+//  Цикл для виводу та отримання чисел
+for (let i = 0; i < numbers.length; i++) {
+  numbers[i].addEventListener('click', e => {
+    let atr = e.target.getAttribute('value');
+    if (!isFirstValue) {
+      getFirstValue(atr);
+    } else if (isFirstValue && !isSecondValue) {
+      getSecondValue(atr);
     }
-    return alert(`Input correct number!`);
-  }
-  switch (action.trim()) {
-    case '+':
-      return (callback = sum(a, b));
-    case '-':
-      return (callback = subtraction(a, b));
-    case '/':
-      return (callback = division(a, b));
-    case '*':
-      return (callback = multiplication(a, b));
-    default:
-      return alert('Input correct action (+ - * /)');
+  });
+}
+
+function getFirstValue(el) {
+  result.innerHTML = '';
+  if (el === '.' && firstValue.includes('.')) return;
+  firstValue += el;
+  result.innerHTML = firstValue;
+}
+
+function getSecondValue(el) {
+  if (firstValue != '' && sign != '') {
+    result.innerHTML = '';
+    if (el === '.' && secondValue.includes('.')) return;
+    secondValue += el;
+    result.innerHTML = secondValue;
   }
 }
 
-const sum = (a, b) => alert(`Sum ${a} and ${b}: ${a + b}`);
-const subtraction = (a, b) => alert(`Subtraction ${a} and ${b}: ${a - b}`);
-const division = (a, b) => alert(`Division ${a} and ${b}: ${a / b}`);
-const multiplication = (a, b) =>
-  alert(`Multiplication ${a} and ${b}: ${a * b}`);
+// Дізнаємося який знак
+function getSign() {
+  for (let i = 0; i < signs.length; i++) {
+    signs[i].addEventListener('click', e => {
+      if (isFirstValue && secondValue !== '') {
+        calculateResult();
+      }
+      sign = e.target.getAttribute('value');
+      isFirstValue = true;
+    });
+  }
+}
+getSign();
 
-calc(firstNumber, secondNumber);
+equals.addEventListener('click', calculateResult);
+
+// Підрахунок
+function calculateResult() {
+  result.innerHTML = '';
+  if (sign === '+') {
+    resultValue = parseFloat(firstValue) + parseFloat(secondValue);
+  } else if (sign === '-') {
+    resultValue = parseFloat(firstValue) - parseFloat(secondValue);
+  } else if (sign === 'x') {
+    resultValue = parseFloat(firstValue) * parseFloat(secondValue);
+  } else if (sign === '/') {
+    if (parseFloat(secondValue) === 0) {
+      result.innerHTML = `<p class="massage">На 0 ділити не можна!</p>`;
+      return;
+    }
+    resultValue = parseFloat(firstValue) / parseFloat(secondValue);
+  }
+  result.innerHTML = resultValue;
+  firstValue = resultValue.toString();
+  secondValue = '';
+  checkResultLength();
+}
+
+function checkResultLength() {
+  resultValue = parseFloat(resultValue.toFixed(5));
+  result.innerHTML = resultValue;
+}
+
+negative.addEventListener('click', changeSign);
+
+function changeSign() {
+  result.innerHTML = '';
+  if (firstValue !== '') {
+    resultValue = -parseFloat(firstValue);
+    firstValue = resultValue.toString();
+  }
+  if (firstValue !== '' && secondValue !== '' && sign !== '') {
+    resultValue = -resultValue;
+  }
+  result.innerHTML = resultValue;
+}
+
+percent.addEventListener('click', percentCalc);
+
+function percentCalc() {
+  result.innerHTML = '';
+  if (firstValue !== '') {
+    resultValue = parseFloat(firstValue) / 100;
+    firstValue = resultValue.toString();
+  }
+  if (firstValue !== '' && secondValue !== '' && sign !== '') {
+    resultValue = resultValue / 100;
+  }
+  result.innerHTML = resultValue;
+}
+
+clear.addEventListener('click', cleaner);
+
+function cleaner() {
+  result.innerHTML = 0;
+  firstValue = '';
+  isFirstValue = false;
+  secondValue = '';
+  isSecondValue = false;
+  sign = '';
+  resultValue = 0;
+}
+
+for (let i = 0; i < dots.length; i++) {
+  dots[i].addEventListener('click', e => {
+    let dotValue = e.target.getAttribute('value');
+    if (!isFirstValue) {
+      if (!firstValue) {
+        firstValue += '0';
+      }
+      if (!firstValue.includes('.')) {
+        firstValue += dotValue;
+        result.innerHTML = firstValue;
+      }
+    }
+    if (isFirstValue && !isSecondValue) {
+      if (!secondValue.includes('.')) {
+        secondValue += dotValue;
+        result.innerHTML = secondValue;
+      }
+    }
+  });
+}
