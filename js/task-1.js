@@ -37,7 +37,7 @@ function getFirstValue(el) {
   } else {
     firstValue += el;
   }
-  result.innerHTML = firstValue;
+  result.innerHTML = parseFloat(firstValue);
   checkFontSize();
 }
 
@@ -47,7 +47,7 @@ function getSecondValue(el) {
     result.innerHTML = '';
     if (el === '.' && secondValue.includes('.')) return;
     secondValue += el;
-    result.innerHTML = secondValue;
+    result.innerHTML = parseFloat(secondValue);
     checkFontSize();
   }
 }
@@ -68,27 +68,50 @@ getSign();
 
 equals.addEventListener('click', calculateResult);
 
+let previousResult = ''; // Змінна для зберігання попереднього результату
+
 function calculateResult() {
-  result.innerHTML = '';
+  // Перетворення значень на числа
+  const num1 = parseFloat(firstValue);
+  const num2 = parseFloat(secondValue);
+
+  if (firstValue !== '' && secondValue === '') {
+    resultValue = num1;
+  }
+
   if (sign === '+') {
-    resultValue = parseFloat(firstValue) + parseFloat(secondValue);
+    resultValue = num1 + num2;
   } else if (sign === '-') {
-    resultValue = parseFloat(firstValue) - parseFloat(secondValue);
+    resultValue = num1 - num2;
   } else if (sign === 'x') {
-    resultValue = parseFloat(firstValue) * parseFloat(secondValue);
+    resultValue = num1 * num2;
   } else if (sign === '/') {
-    if (parseFloat(secondValue) === 0 || parseFloat(firstValue) === 0) {
-      result.innerHTML = `<p class="massage">На 0 ділити не можна!</p>`;
+    if (num2 === 0 || num1 === 0) {
+      result.innerHTML = `<p class="message">На 0 ділити не можна!</p>`;
       return;
     }
-    resultValue = parseFloat(firstValue) / parseFloat(secondValue);
+    resultValue = num1 / num2;
   }
+
+  // Збереження поточного результату як попереднього
+  previousResult = resultValue;
+
   result.innerHTML = resultValue;
   firstValue = resultValue.toString();
   secondValue = '';
   checkResultLength();
   checkFontSize();
+
+  // Обнулення змінних
+  firstValue = '';
+  secondValue = '';
+  sign = '';
 }
+
+equals.addEventListener('click', () => {
+  calculateResult();
+  firstValue = previousResult; // Встановлення поточного результату як першого значення для наступного обчислення
+});
 
 function checkResultLength() {
   resultValue = parseFloat(resultValue.toFixed(5));
@@ -100,22 +123,24 @@ negative.addEventListener('click', changeSign);
 function changeSign() {
   result.innerHTML = '';
   if (firstValue !== '') {
-    resultValue = -parseFloat(firstValue);
+    resultValue = -parseFloat(firstValue); // Отримуємо змінну firstValue, яка містить перше число
     firstValue = resultValue.toString();
+    result.innerHTML = resultValue;
   }
   if (firstValue !== '' && secondValue !== '' && sign !== '') {
     resultValue = -resultValue;
+    result.innerHTML = resultValue;
   }
-  result.innerHTML = resultValue;
 }
 
 percent.addEventListener('click', percentCalc);
 
 function percentCalc() {
   result.innerHTML = '';
-  if (firstValue !== '') {
-    resultValue = parseFloat(firstValue) / 100;
-    firstValue = resultValue.toString();
+  let tempValue = parseFloat(firstValue);
+  if (tempValue !== '') {
+    resultValue = tempValue / 100;
+    firstValue = resultValue;
   }
   if (firstValue !== '' && secondValue !== '' && sign !== '') {
     resultValue = resultValue / 100;
